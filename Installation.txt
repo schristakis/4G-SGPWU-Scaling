@@ -1,5 +1,5 @@
 ############Installation##############
-Basic images:
+Images:
 schristakis-master.ndz
 schristakis-worker(i).ndz
 
