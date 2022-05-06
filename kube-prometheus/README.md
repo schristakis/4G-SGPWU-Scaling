@@ -4,6 +4,10 @@
 
 > kubectl apply --server-side -f manifests/setup
 
-> until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo ""; done
-
 > kubectl apply -f manifests/
+
+> kubectl edit svc grafana -n monitoring (change from Cluster IP to NodePort)
+
+> dhclient eth1
+
+> route add -net 10.64.44.0/23 gw 10.64.92.1
