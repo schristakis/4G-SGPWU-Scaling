@@ -24,4 +24,19 @@ kubectl apply -f oai-spgwc-devel.yaml --validate=false
 sleep 40
 kubectl apply -f oai-spgwu-devel.yaml --validate=false
 sleep 30
-kubectl get pods -n oai 
+kubectl get pods -n oai
+
+git clone https://github.com/prometheus-operator/kube-prometheus.git
+cd kube-prometheus
+git checkout release-0.9
+kubectl apply --server-side -f manifests/setup
+kubectl apply -f manifests/
+kubectl patch svc grafana --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]' -n monitoring
+dhclient eth1
+route add -net 10.64.44.0/23 gw 10.64.92.1
+ip4=$(/sbin/ip -o -4 addr list eth1 | awk '{print $4}' | cut -d/ -f1)
+VAR2=":30179"
+VAR3="Grafana on port -> "
+VAR4="$VAR3$ip4$VAR2"
+echo $VAR3
+sleep 50
