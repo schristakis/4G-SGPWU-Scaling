@@ -17,7 +17,4 @@
 > kubectl describe service --all-namespaces | grep -i nodeport
 
 
-ip4=$(/sbin/ip -o -4 addr list eth1 | awk '{print $4}' | cut -d/ -f1)
-VAR2=":30179"
-VAR3="$ip4$VAR2"
-echo $VAR3
+
