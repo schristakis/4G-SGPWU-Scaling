@@ -2,6 +2,8 @@
 
 > cd kube-prometheus
 
+> git checkout release-0.9
+
 > kubectl apply --server-side -f manifests/setup
 
 > kubectl apply -f manifests/
