@@ -5,9 +5,9 @@ kubectl create namespace oai
 kubectl create secret docker-registry regcred --docker-server=194.177.207.79 --docker-username=admin --docker-password=password
 kubectl create secret docker-registry regcred --docker-server=194.177.207.79 --docker-username=admin --docker-password=password -n oai
 #git clone https://repo.nitlab.inf.uth.gr/oai-k8s/oai-deployment-files.git
-kubectl label nodes soc-master usb=usrp
-kubectl label nodes soc-worker1 usb=usrp
-kubectl label nodes soc-worker2 usb=usrp
+#kubectl label nodes soc-master usb=usrp
+#kubectl label nodes soc-worker1 usb=usrp
+#kubectl label nodes soc-worker2 usb=usrp
 kubectl label nodes soc-worker3 usb=usrp
 cd ~/oai-deployment-files
 kubectl apply -f cassandra.yaml --validate=false
@@ -21,6 +21,16 @@ sleep 30
 kubectl apply -f oai-spgwu-devel.yaml --validate=false
 sleep 30
 kubectl apply -f oai-enb-devel.yaml --validate=false
+sleep 2
+node=$(kubectl get pods -n oai -o wide | grep enb | awk {'print $7'})
+echo $node
+node_ip=$(kubectl get nodes -o wide | grep $node | awk {'print $6'})
+echo $node_ip
+echo "Turning usrp on via curl."
+ip=(${node_ip//./ })
+node_IP=10.1.0.${ip[3]}
+echo $node_IP
+ssh root@$node_ip "curl $node_IP/usrpon"
 sleep 20
 kubectl get pods -n oai
 
@@ -38,4 +48,4 @@ VAR2=":30179"
 VAR3="Grafana on port -> "
 VAR4="$VAR3$ip4$VAR2"
 echo $VAR4
-sleep 20
+sleep 5
