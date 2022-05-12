@@ -1,0 +1,246 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mme-sa
+  namespace: oai
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: mme-rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: mme-sa
+  namespace: oai
+---
+apiVersion: v1
+data:
+  hss_hostname: oai-hss
+  hss_ip: oai-hss.oai.svc.cluster.local
+  hss_realm: oai.svc.cluster.local
+  hss_service: oai-hss.oai.svc.cluster.local
+  mcc: "208"
+  mme_cidr_s10: 127.0.0.1/32
+  mme_cidr_s11: 172.16.1.100/24
+  mme_cidr_s1c: 192.168.1.100/24
+  mme_code: "1"
+  mme_gid: "4"
+  mme_realm: oai.svc.cluster.local
+  mme_service: oai-mme.oai.svc.cluster.local
+  mnc: "93"
+  nw_if_s10: lo
+  nw_if_s11: net2
+  nw_if_s1c: net1
+  sgw_cidr_s11: 172.16.1.101/24
+  tac: "1"
+kind: ConfigMap
+metadata:
+  name: mme-config
+  namespace: oai
+---
+apiVersion: v1
+data:
+  mme.cacert.pem: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN2akNDQWllZ0F3SUJBZ0lVVkRMVG9rbzhqQ3h1ekVicWpkL2paaUZhRUZvd0RRWUpLb1pJaHZjTkFRRUwKQlFBd2NURW1NQ1FHQTFVRUF3d2RiMkZwTFcxdFpTNXZZV2t1YzNaakxtTnNkWE4wWlhJdWJHOWpZV3d4Q3pBSgpCZ05WQkFZVEFrWlNNUTB3Q3dZRFZRUUlEQVJRUVVOQk1Rd3dDZ1lEVlFRSERBTkJhWGd4RURBT0JnTlZCQW9NCkIwVjFjbVZqYjIweEN6QUpCZ05WQkFzTUFrTk5NQjRYRFRJd01UQXhNakUwTkRNek5Wb1hEVE13TVRBeE1ERTAKTkRNek5Wb3djVEVtTUNRR0ExVUVBd3dkYjJGcExXMXRaUzV2WVdrdWMzWmpMbU5zZFhOMFpYSXViRzlqWVd3eApDekFKQmdOVkJBWVRBa1pTTVEwd0N3WURWUVFJREFSUVFVTkJNUXd3Q2dZRFZRUUhEQU5CYVhneEVEQU9CZ05WCkJBb01CMFYxY21WamIyMHhDekFKQmdOVkJBc01Ba05OTUlHZk1BMEdDU3FHU0liM0RRRUJBUVVBQTRHTkFEQ0IKaVFLQmdRQzc1dTJCQ0ttT2hkeXJGTy9SU01LK3FMR3VQazg4VHVyZ1R5K3FGa1hGTzdlYmNld213ZXlxT0dDUApNL2QxVU5SdHd5eXhlVzQzUy9WeUtUT2RpTTZKTEZmSUZOcUhFRGJzSzNrSmxoUllESHA1ZXJPZ3RLbHhJMEV4ClkzWHJOYzN0N0xPbzlBc0hJV2pzaG5IVXpTUVhXUllKM3dzdUJhalRSTThncThOOFNRSURBUUFCbzFNd1VUQWQKQmdOVkhRNEVGZ1FVeUJJSWp2QzN2b3VCaHAzaGZZbnJTQStpMWxRd0h3WURWUjBqQkJnd0ZvQVV5QklJanZDMwp2b3VCaHAzaGZZbnJTQStpMWxRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBTkJna3Foa2lHOXcwQkFRc0ZBQU9CCmdRQVBaR1p6VmlKa1h2ejk1RXE3VXNBakN0K2ZNbGxGdnhEMlYrWUJTdUtLcEpkVTlzNWFmRHZlaWtUaDFnOUgKTW9mWmlKWVFPWUlFUU9USmY4SURMaDRNdlhhVzFiZ2J2clBOb203MXgzSWZ4blZ4U3Y2UkQ4NVo1UXZzcDZTbgp6ajdlS2trNU9jU1ZoYjlwcjAvZ2tUVm9Fbk9wUFY5Zjd4ZXZjSkUzVkRWUU9BPT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+  mme.cert.pem: Q2VydGlmaWNhdGU6CiAgICBEYXRhOgogICAgICAgIFZlcnNpb246IDMgKDB4MikKICAgICAgICBTZXJpYWwgTnVtYmVyOiAxICgweDEpCiAgICAgICAgU2lnbmF0dXJlIEFsZ29yaXRobTogc2hhMjU2V2l0aFJTQUVuY3J5cHRpb24KICAgICAgICBJc3N1ZXI6IENOPW9haS1tbWUub2FpLnN2Yy5jbHVzdGVyLmxvY2FsLCBDPUZSLCBTVD1QQUNBLCBMPUFpeCwgTz1FdXJlY29tLCBPVT1DTQogICAgICAgIFZhbGlkaXR5CiAgICAgICAgICAgIE5vdCBCZWZvcmU6IE9jdCAxMiAxNDo0MzozNiAyMDIwIEdNVAogICAgICAgICAgICBOb3QgQWZ0ZXIgOiBPY3QgMTIgMTQ6NDM6MzYgMjAyMSBHTVQKICAgICAgICBTdWJqZWN0OiBDPUZSLCBTVD1QQUNBLCBPPUV1cmVjb20sIE9VPUNNLCBDTj1vYWktbW1lLm9haS5zdmMuY2x1c3Rlci5sb2NhbAogICAgICAgIFN1YmplY3QgUHVibGljIEtleSBJbmZvOgogICAgICAgICAgICBQdWJsaWMgS2V5IEFsZ29yaXRobTogcnNhRW5jcnlwdGlvbgogICAgICAgICAgICAgICAgUlNBIFB1YmxpYy1LZXk6ICgxMDI0IGJpdCkKICAgICAgICAgICAgICAgIE1vZHVsdXM6CiAgICAgICAgICAgICAgICAgICAgMDA6ZGQ6NzM6YjA6MTk6NTc6ZTg6ZjE6MTI6ZDc6Yzk6ZWM6ZGQ6ZjM6ZTg6CiAgICAgICAgICAgICAgICAgICAgZDI6YjE6ZTk6NjM6ZGY6MTk6N2Y6ZDA6ZTg6NjA6MGM6NmY6OTk6ZjE6Y2I6CiAgICAgICAgICAgICAgICAgICAgM2E6MTg6ODQ6M2Y6NzM6NWQ6ZmU6Yzk6MTQ6YWQ6YWE6MGU6NWY6NWM6YTQ6CiAgICAgICAgICAgICAgICAgICAgZjU6OTQ6MWY6NzM6YTQ6MTE6NTg6MGM6N2U6MjM6Njg6NDQ6MzU6YmY6Mzg6CiAgICAgICAgICAgICAgICAgICAgODY6NTk6MGI6OTQ6ZTA6YjQ6ZDM6Zjk6ZWM6MjU6NzU6ZWU6NzM6OGE6Y2M6CiAgICAgICAgICAgICAgICAgICAgNmU6YWQ6YTM6MzU6YmY6YzE6ZmM6Yjk6NjM6OTI6NTc6NWQ6NzM6ZGU6Nzg6CiAgICAgICAgICAgICAgICAgICAgNjI6MjU6ZWE6YjY6Yjc6MDg6MmY6MTk6OGU6YmI6ZDg6ZTQ6ZGY6MDY6OWE6CiAgICAgICAgICAgICAgICAgICAgODA6Mjg6NjE6YTQ6OGY6MjA6NzY6YmE6Njk6ODE6Mjc6NWY6ZDI6NTI6NWI6CiAgICAgICAgICAgICAgICAgICAgODc6ZTc6ZjQ6Njc6ZDY6Y2E6OTk6MTY6ZjcKICAgICAgICAgICAgICAgIEV4cG9uZW50OiA2NTUzNyAoMHgxMDAwMSkKICAgICAgICBYNTA5djMgZXh0ZW5zaW9uczoKICAgICAgICAgICAgWDUwOXYzIEJhc2ljIENvbnN0cmFpbnRzOiAKICAgICAgICAgICAgICAgIENBOkZBTFNFCiAgICAgICAgICAgIE5ldHNjYXBlIENvbW1lbnQ6IAogICAgICAgICAgICAgICAgT3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlmaWNhdGUKICAgICAgICAgICAgWDUwOXYzIFN1YmplY3QgS2V5IElkZW50aWZpZXI6IAogICAgICAgICAgICAgICAgODM6NDM6NEE6RjQ6RTk6Njc6ODA6OTA6NDU6OUE6NzI6RkE6MkM6RkU6N0Y6NzU6QjI6RjI6NkI6QkIKICAgICAgICAgICAgWDUwOXYzIEF1dGhvcml0eSBLZXkgSWRlbnRpZmllcjogCiAgICAgICAgICAgICAgICBrZXlpZDpDODoxMjowODo4RTpGMDpCNzpCRTo4Qjo4MTo4Njo5RDpFMTo3RDo4OTpFQjo0ODowRjpBMjpENjo1NAoKICAgIFNpZ25hdHVyZSBBbGdvcml0aG06IHNoYTI1NldpdGhSU0FFbmNyeXB0aW9uCiAgICAgICAgIDFmOmIyOjM3OjQwOjdhOjZhOjAxOmNjOjMxOjhhOjE5OmMzOjE0Ojc1OjkyOjUyOjNjOjMzOgogICAgICAgICAyYTpkNjo2OTo3NzoyODo2OTpiMTo4YTpmNDo0ZjpkYzpiMDoyNjoxMzozYjoxZjpjYzoxZDoKICAgICAgICAgNzQ6YTM6NDc6OGY6N2Q6MWQ6NGU6ZTY6NDQ6YjE6NDg6YmI6NWQ6YzA6YjQ6MDA6ZTQ6NmU6CiAgICAgICAgIDk3OjhjOjFhOmQ3OjdkOjQ5OjlkOjc2OmFhOjFkOjA1OjdmOjE3OmY5OjBlOjIxOjhiOjYyOgogICAgICAgICA1Nzo4NDpkODo2OTowZTo1Njo5ZjoyMjo3MDozYjo2NDo3NjoxZDplNjo1YTpmNzo5ZjoxMjoKICAgICAgICAgMjE6MzE6NzA6ZDM6OWU6Y2E6ZjU6MGY6ZGM6MjA6NTk6ZDA6Mzk6Nzg6NmQ6OTE6YjY6NmQ6CiAgICAgICAgIDdlOjA3OmM5OmY1OmEzOjFjOjZhOmY0OjczOmE3OmEzOmNlOmFjOjg4OmZiOjVkOjcwOjRlOgogICAgICAgICA3MTpjYQotLS0tLUJFR0lOIENFUlRJRklDQVRFLS0tLS0KTUlJQ3hUQ0NBaTZnQXdJQkFnSUJBVEFOQmdrcWhraUc5dzBCQVFzRkFEQnhNU1l3SkFZRFZRUUREQjF2WVdrdApiVzFsTG05aGFTNXpkbU11WTJ4MWMzUmxjaTVzYjJOaGJERUxNQWtHQTFVRUJoTUNSbEl4RFRBTEJnTlZCQWdNCkJGQkJRMEV4RERBS0JnTlZCQWNNQTBGcGVERVFNQTRHQTFVRUNnd0hSWFZ5WldOdmJURUxNQWtHQTFVRUN3d0MKUTAwd0hoY05NakF4TURFeU1UUTBNek0yV2hjTk1qRXhNREV5TVRRME16TTJXakJqTVFzd0NRWURWUVFHRXdKRwpVakVOTUFzR0ExVUVDQXdFVUVGRFFURVFNQTRHQTFVRUNnd0hSWFZ5WldOdmJURUxNQWtHQTFVRUN3d0NRMDB4CkpqQWtCZ05WQkFNTUhXOWhhUzF0YldVdWIyRnBMbk4yWXk1amJIVnpkR1Z5TG14dlkyRnNNSUdmTUEwR0NTcUcKU0liM0RRRUJBUVVBQTRHTkFEQ0JpUUtCZ1FEZGM3QVpWK2p4RXRmSjdOM3o2Tkt4NldQZkdYL1E2R0FNYjVueAp5em9ZaEQ5elhmN0pGSzJxRGw5Y3BQV1VIM09rRVZnTWZpTm9SRFcvT0laWkM1VGd0TlA1N0NWMTduT0t6RzZ0Cm96Vy93Znk1WTVKWFhYUGVlR0lsNnJhM0NDOFpqcnZZNU44R21vQW9ZYVNQSUhhNmFZRW5YOUpTVzRmbjlHZlcKeXBrVzl3SURBUUFCbzNzd2VUQUpCZ05WSFJNRUFqQUFNQ3dHQ1dDR1NBR0crRUlCRFFRZkZoMVBjR1Z1VTFOTQpJRWRsYm1WeVlYUmxaQ0JEWlhKMGFXWnBZMkYwWlRBZEJnTlZIUTRFRmdRVWcwTks5T2xuZ0pCRm1uTDZMUDUvCmRiTHlhN3N3SHdZRFZSMGpCQmd3Rm9BVXlCSUlqdkMzdm91QmhwM2hmWW5yU0EraTFsUXdEUVlKS29aSWh2Y04KQVFFTEJRQURnWUVBSDdJM1FIcHFBY3d4aWhuREZIV1NVand6S3RacGR5aHBzWXIwVDl5d0poTTdIOHdkZEtOSApqMzBkVHVaRXNVaTdYY0MwQU9SdWw0d2ExMzFKblhhcUhRVi9GL2tPSVl0aVY0VFlhUTVXbnlKd08yUjJIZVphCjk1OFNJVEZ3MDU3SzlRL2NJRm5RT1hodGtiWnRmZ2ZKOWFNY2F2UnpwNlBPcklqN1hYQk9jY289Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  mme.key.pem: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlDWGdJQkFBS0JnUURkYzdBWlYranhFdGZKN04zejZOS3g2V1BmR1gvUTZHQU1iNW54eXpvWWhEOXpYZjdKCkZLMnFEbDljcFBXVUgzT2tFVmdNZmlOb1JEVy9PSVpaQzVUZ3ROUDU3Q1YxN25PS3pHNnRvelcvd2Z5NVk1SlgKWFhQZWVHSWw2cmEzQ0M4Wmpydlk1TjhHbW9Bb1lhU1BJSGE2YVlFblg5SlNXNGZuOUdmV3lwa1c5d0lEQVFBQgpBb0dBZW0wRmtzMDEyMmltWVZ5UXk5SVFBUWxkREM2bHFkRjlvQUptb2ZUUE5sU09XM0pBYzl2NXNrVGwxV3JnCjFUV2FFYjhBNVU4cXRlN1hvOUpVKzQ5YWl1UTdPWWU2R0N0VDBic3dRdVFpbkMzd01pWWNCVWUrUmN2aEt6ay8KMmFRdmlEUW1ETHZyTGNiWnBGc3FTa2RkaGtZeTZPc3Yra2ZHS2VLbmdXTzY5UUVDUVFEekhPRzFPc2RubytrWgpMa1RCQzFSc0FsRmhId1pvUTNKb1lpU3RreDJiZytCUUlOK1NmMmVnQzFvZjFSWDAwZUswQ0VObFArQ0xuRjVWClFXMWVXNXlCQWtFQTZURGNXTGpYTEVxaDEyb09CMm0waHJ5RVBnT0RBMnc2NWRUc2tZZzVSNys3bUo4YnREd3UKWmpFMHU3dWJ1WHZPb1oyNVBMeVdydUpyQnpaRVlCUFhkd0pCQU1aK2pWYlFNQ0ZSdGk5bUZLTGRZa2R4dVFvbwpMNjRQYTZrSWdOUHJxeC9mazlVNGtmSmw3YkRCdEFzTGl3ckNGMnhRMXQ0alFtNGE5UFo5SGhRTmpvRUNRUUNFCmZBQVVZQi9QeUM4ZTVlQkdrZVhBendZSy9ZL0h1QXZXWEJ4enFvTndvaHdBNEJTclY2MjgzYVBxTFBLU2RTYTIKWjVmQVRCMElDeGRucDRzOVVzaU5Ba0VBelhwaEtrU3phSHdzU1hqN3YycDRPTlpBRk1uSWlhVTh4RlJ2RUlrawpkYlhUdEl4YnVKdXZKeGE2RURtQ0tXUm5sQVBZUGtOb3c1MGx5SnlqN1J0L2lnPT0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K
+kind: Secret
+metadata:
+  name: mme-tls-secret
+  namespace: oai
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oai-mme
+  name: oai-mme
+  namespace: oai
+spec:
+  clusterIP: None
+  ports:
+  - name: oai-mme
+    port: 3870
+    protocol: TCP
+    targetPort: 3870
+  - name: oai-mme-secure
+    port: 5870
+    protocol: TCP
+    targetPort: 5870
+  - name: s11
+    port: 2123
+    protocol: TCP
+    targetPort: 2123
+  selector:
+    app: oai-mme
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oai-mme
+  name: oai-mme
+  namespace: oai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oai-mme
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: mme-net1, mme-net2
+      labels:
+        app: oai-mme
+    spec:
+      containers:
+      - env:
+        - name: MME_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              key: mme_service
+              name: mme-config
+        - name: MME_REALM
+          valueFrom:
+            configMapKeyRef:
+              key: mme_realm
+              name: mme-config
+        - name: MME_GID
+          valueFrom:
+            configMapKeyRef:
+              key: mme_gid
+              name: mme-config
+        - name: MME_CODE
+          valueFrom:
+            configMapKeyRef:
+              key: mme_code
+              name: mme-config
+        - name: NW_IF_S1C
+          valueFrom:
+            configMapKeyRef:
+              key: nw_if_s1c
+              name: mme-config
+        - name: NW_IF_S11
+          valueFrom:
+            configMapKeyRef:
+              key: nw_if_s11
+              name: mme-config
+        - name: NW_IF_S10
+          valueFrom:
+            configMapKeyRef:
+              key: nw_if_s10
+              name: mme-config
+        - name: MCC
+          valueFrom:
+            configMapKeyRef:
+              key: mcc
+              name: mme-config
+        - name: MNC
+          valueFrom:
+            configMapKeyRef:
+              key: mnc
+              name: mme-config
+        - name: TAC
+          valueFrom:
+            configMapKeyRef:
+              key: tac
+              name: mme-config
+        - name: MME_CIDR_S1C
+          valueFrom:
+            configMapKeyRef:
+              key: mme_cidr_s1c
+              name: mme-config
+        - name: MME_CIDR_S11
+          valueFrom:
+            configMapKeyRef:
+              key: mme_cidr_s11
+              name: mme-config
+        - name: MME_CIDR_S10
+          valueFrom:
+            configMapKeyRef:
+              key: mme_cidr_s10
+              name: mme-config
+        - name: SGW_CIDR_S11
+          valueFrom:
+            configMapKeyRef:
+              key: sgw_cidr_s11
+              name: mme-config
+        - name: HSS_SERVICE
+          valueFrom:
+            configMapKeyRef:
+              key: hss_service
+              name: mme-config
+        - name: HSS_REALM
+          valueFrom:
+            configMapKeyRef:
+              key: hss_realm
+              name: mme-config
+        - name: HSS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: hss_hostname
+              name: mme-config
+        - name: HSS_IP
+          valueFrom:
+            configMapKeyRef:
+              key: hss_ip
+              name: mme-config
+        image: 194.177.207.79:5000/oai/oai-mme-new
+        imagePullPolicy: IfNotPresent
+        name: mme
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /opt/oai-mme/certs
+          name: certs
+        ports:
+        - containerPort: 3870
+          name: oai-mme
+        - containerPort: 5870
+          name: oai-mme-secure
+        - containerPort: 2123
+          name: s11
+      - command:
+        - /bin/sleep
+        - infinity
+        image: corfr/tcpdump
+        name: tcpdump
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: regcred
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
+      serviceAccountName: mme-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: certs
+        secret:
+          secretName: mme-tls-secret
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: mme-net1
+  namespace: oai
+spec:
+  config: '{ "cniVersion": "0.3.0", "type": "macvlan", "master": "eth0", "ipam": { "type": "static", "addresses": [ { "address": "192.168.1.100/24",
+    "gateway": "192.168.1.1" } ] } }'
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: mme-net2
+  namespace: oai
+spec:
+  config: '{ "cniVersion": "0.3.0", "type": "macvlan", "master": "eth0", "ipam": { "type": "static", "addresses": [ { "address": "172.16.1.100/24",
+    "gateway": "172.16.1.1" } ] } }'
