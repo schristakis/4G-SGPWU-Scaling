@@ -1,4 +1,4 @@
-omf load -i baseline_icarus_lte.ndz -t node054
+omf load -i app-aware-ue.ndz -t node054
 
 minicom -D /dev/ttyUSB1
 
