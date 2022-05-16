@@ -1,0 +1,12 @@
+omf load -i baseline_icarus_lte.ndz -t node054
+
+minicom -D /dev/ttyUSB1
+
+(For easy copy paste run on serial console: ^az -> t -> f -> change from 0 to 1 -> enter -> enter)
+
+at+cgdcont=0,"IP","apn.oai.svc.cluster.local"
+at+cgdcont=1,"IP","apn.oai.svc.cluster.local"
+at+cfun=0
+at+cfun=1
+at^ndisdup=1,1
+at^dhcp?
