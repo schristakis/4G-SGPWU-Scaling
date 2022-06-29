@@ -1,0 +1,288 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: enb-sa
+  namespace: oai
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: enb-rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: enb-sa
+  namespace: oai
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: enb-config
+  namespace: oai
+data:
+  enb_id: "00e00"
+  enb_name: "eNB-Eurecom-LTEBox"
+  mcc: "208"
+  mme_ip4: "192.168.1.100"
+  mme_ip6: "::1"
+  mnc: "93"
+  mnc_length: "2"
+  ru_local_if: "net3"
+  frame_type: "FDD"
+  tdd_config: "3"
+  tdd_config_s: "0"
+  eutra_band: "7"
+  downlink_frequency: "2680000000L"
+  uplink_frequency_offset: "-120000000"
+  ru_local_ip: "net3_ip"
+  ru_remote_ip: "192.168.18.205"
+  s1_mme_if: "net1"
+  s1_mme_ip: "192.168.1.101"
+  s1_u_if: "net2"
+  s1_u_ip: "172.16.2.101"
+  tac: "1"
+  x2c_ip: "172.16.2.101"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oai-enb
+  name: oai-enb
+  namespace: oai
+spec:
+  clusterIP: None
+  ports:
+  - name: oai-enb
+    port: 22100
+    protocol: TCP
+    targetPort: 22100
+  - name: s1u
+    port: 2152
+    protocol: UDP
+    targetPort: 2152
+  - name: s1c
+    port: 36412
+    protocol: UDP
+    targetPort: 36412
+  - name: x2c
+    port: 36422
+    protocol: UDP
+    targetPort: 36422
+  - name: if5-ori
+    port: 50000
+    protocol: UDP
+    targetPort: 50000
+  - name: if5-ecpri
+    port: 50001
+    protocol: UDP
+    targetPort: 50001
+  selector:
+    app: oai-enb
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: oai-enb
+  name: oai-enb
+  namespace: oai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oai-enb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: enb-net1, enb-net2, enb-net3
+      labels:
+        app: oai-enb
+    spec:
+      containers:
+      - env:
+        - name: ENB_ID
+          valueFrom:
+            configMapKeyRef:
+              key: enb_id
+              name: enb-config
+        - name: ENB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: enb_name
+              name: enb-config
+        - name: MME_IP4
+          valueFrom:
+            configMapKeyRef:
+              key: mme_ip4
+              name: enb-config
+        - name: MME_IP6
+          valueFrom:
+            configMapKeyRef:
+              key: mme_ip6
+              name: enb-config
+        - name: MCC
+          valueFrom:
+            configMapKeyRef:
+              key: mcc
+              name: enb-config
+        - name: TAC
+          valueFrom:
+            configMapKeyRef:
+              key: tac
+              name: enb-config
+        - name: MNC
+          valueFrom:
+            configMapKeyRef:
+              key: mnc
+              name: enb-config
+        - name: MNC_LENGTH
+          valueFrom:
+            configMapKeyRef:
+              key: mnc_length
+              name: enb-config
+        - name: RU_LOCAL_IF
+          valueFrom:
+            configMapKeyRef:
+              key: ru_local_if
+              name: enb-config
+        - name: FRAME_TYPE 
+          valueFrom:
+            configMapKeyRef:
+              key: frame_type
+              name: enb-config
+        - name: TDD_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              key: tdd_config
+              name: enb-config
+        - name: TDD_CONFIG_S
+          valueFrom:
+            configMapKeyRef:
+              key: tdd_config_s
+              name: enb-config
+        - name: EUTRA_BAND
+          valueFrom:
+            configMapKeyRef:
+              key: eutra_band
+              name: enb-config
+        - name: DOWNLINK_FREQUENCY
+          valueFrom:
+            configMapKeyRef:
+              key: downlink_frequency
+              name: enb-config
+        - name: UPLINK_FREQUENCY_OFFSET
+          valueFrom:
+            configMapKeyRef:
+              key: uplink_frequency_offset
+              name: enb-config
+        - name: RU_LOCAL_IP
+          valueFrom:
+            configMapKeyRef:
+              key: ru_local_ip
+              name: enb-config
+        - name: RU_REMOTE_IP
+          valueFrom:
+            configMapKeyRef:
+              key: ru_remote_ip
+              name: enb-config
+        - name: S1_MME_IF
+          valueFrom:
+            configMapKeyRef:
+              key: s1_mme_if
+              name: enb-config
+        - name: S1_MME_IP
+          valueFrom:
+            configMapKeyRef:
+              key: s1_mme_ip
+              name: enb-config
+        - name: S1_U_IF
+          valueFrom:
+            configMapKeyRef:
+              key: s1_u_if
+              name: enb-config
+        - name: S1_U_IP
+          valueFrom:
+            configMapKeyRef:
+              key: s1_u_ip
+              name: enb-config
+        - name: X2C_IP
+          valueFrom:
+            configMapKeyRef:
+              key: x2c_ip
+              name: enb-config
+#        image: 194.177.207.79:5000/oai/oai-enb-master-flexran
+#        image: 194.177.207.79:5000/oai/oai-enb-devel
+#        image: 194.177.207.79:5000/oai/oai-rcc-exper1
+#        image: 194.177.207.79:5000/oai/oai-rcc-exper1
+        image: 194.177.207.79:5000/oai/oai-enb-upper
+        command: ["/bin/sh", "-c"]
+        args:
+        - "/opt/oai-enb/bin/entrypoint.sh ; /usr/bin/sleep 2; /opt/oai-enb/bin/lte-softmodem -O /opt/oai-enb/etc/enb-monolithic.conf; while true; do sleep 30; done"
+        imagePullPolicy: IfNotPresent
+        name: enb
+        ports:
+        - containerPort: 22100
+          name: oai-enb
+        - containerPort: 2152
+          name: s1u
+        - containerPort: 36412
+          name: s1c
+        - containerPort: 36422
+          name: x2c
+        - containerPort: 50000
+          name: if5-ori
+        - containerPort: 50001
+          name: if5-ecpri
+        securityContext:
+          privileged: true
+      imagePullSecrets:
+      - name: regcred
+      - command:
+        - /bin/sleep
+        - infinity
+        image: corfr/tcpdump
+        name: tcpdump
+      nodeSelector:
+        usb: usrp      
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
+      serviceAccountName: enb-sa
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: enb-net1
+  namespace: oai
+spec:
+  config: '{ "cniVersion": "0.3.0", "type": "macvlan", "master": "eth0", "ipam": { "type": "static", "addresses": [ { "address": "192.168.1.101/24",
+    "gateway": "192.168.1.1" } ] } }'
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: enb-net2
+  namespace: oai
+spec:
+  config: '{ "cniVersion": "0.3.0", "type": "macvlan", "master": "eth0", "ipam": { "type": "static", "addresses": [ { "address": "172.16.2.101/24",
+    "gateway": "172.16.2.1" } ] } }'
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: enb-net3
+  namespace: oai
+spec:
+  config: '{ "cniVersion": "0.3.0", "type": "macvlan", "master": "eth1", "ipam": { "type": "static", "addresses": [ { "address": "192.168.18.206/24",
+    "gateway": "192.168.18.1" } ] } }'
