@@ -1,7 +1,6 @@
-wget https://www.tcpdump.org/release/tcpdump-4.99.1.tar.gz
-wget https://www.tcpdump.org/release/libpcap-1.10.1.tar.gz
-tar xzvf tcpdump-4.99.1.tar.gz
-tar xzvf libpcap-1.10.1.tar.gz
-./configure 
-make install
+ip route del default
+ip route add default via 10.244.2.1 dev eth0
 
+wget http://mirror.centos.org/centos/7/os/x86_64/Packages/tcpdump-4.9.2-4.el7_7.1.x86_64.rpm
+yum install tcpdump-4.9.2-4.el7_7.1.x86_64.rpm
+rpm -ivh tcpdump-4.9.2-4.el7_7.1.x86_64.rpm
