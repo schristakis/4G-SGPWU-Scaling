@@ -1,3 +1,7 @@
+####### USRP ############
+curl 10.1.0.67/usrpon
+
+
 #### Internet Access for spgwu's ###
 ip route del default
 
