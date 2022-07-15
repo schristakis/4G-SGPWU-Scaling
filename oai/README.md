@@ -1,4 +1,5 @@
 ####### USRP ############
+
 curl 10.1.0.67/usrpon
 
 
@@ -25,3 +26,6 @@ rpm -ivh tcpdump-4.9.2-4.el7_7.1.x86_64.rpm
 Create -> New Dashboard -> add an empty panel -> prometheus -> paste the setence below
 
 rate(container_network_receive_packets_total{container="POD", interface="net2", job="kubelet", pod=~"oai-spgwu.*",namespace="oai"}[1m])
+
+
+http://10.64.93.11:30179/
