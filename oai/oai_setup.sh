@@ -42,6 +42,8 @@ kubectl apply --server-side -f manifests/setup
 kubectl apply -f manifests/
 kubectl patch svc grafana --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]' -n monitoring
 kubectl patch svc grafana --type='json' -p '[{"op":"replace","path":"/spec/ports/0/nodePort","value":30179}]' -n monitoring
+kubectl patch svc prometheus-k8s --type='json' -p '[{"op":"replace","path":"/spec/type","value":"NodePort"}]' -n monitoring
+kubectl patch svc prometheus-k8s --type='json' -p '[{"op":"replace","path":"/spec/ports/0/nodePort","value":32468}]' -n monitoring
 dhclient eth1
 route add -net 10.64.44.0/23 gw 10.64.92.1
 ip4=$(/sbin/ip -o -4 addr list eth1 | awk '{print $4}' | cut -d/ -f1)
