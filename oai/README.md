@@ -1,3 +1,5 @@
+http://10.64.93.11:32468/graph?g0.expr=rate(container_network_receive_packets_total%7Bcontainer%3D%22POD%22%2C%20interface%3D%22net2%22%2C%20job%3D%22kubelet%22%2C%20pod%3D~%22oai-spgwu.*%22%2Cnamespace%3D%22oai%22%7D%5B1m%5D)&g0.tab=1&g0.stacked=0&g0.show_exemplars=0&g0.range_input=1h
+
 ####### USRP ############
 
 curl 10.1.0.67/usrpon
