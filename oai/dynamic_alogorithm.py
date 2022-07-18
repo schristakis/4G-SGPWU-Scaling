@@ -15,7 +15,7 @@ while(1):
     data = resp.json()
     #value = float(data["data"]["result"][0]["value"][1])
     value = int(input())
-    print(value)
+    #print(value)
 
     time.sleep(1)
 
@@ -36,6 +36,7 @@ while(1):
     # 3 interfaces
     elif (limitB < value < limitC):
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu2-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu3-devel.yaml --validate=false")
         os.system("kubectl delete -f oai-deployment-files/oai-spgwu4-devel.yaml")
         os.system("kubectl delete -f oai-deployment-files/oai-spgwu5-devel.yaml")
@@ -43,13 +44,19 @@ while(1):
     # 4 interfaces
     elif (limitC < value < limitD):
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu2-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu3-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu4-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl delete -f oai-deployment-files/oai-spgwu5-devel.yaml")
 
     # 5 interfaces
     elif (value > limitD):
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu2-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu3-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu4-devel.yaml --validate=false")
+        time.sleep(2)
         os.system("kubectl apply -f oai-deployment-files/oai-spgwu5-devel.yaml --validate=false")
