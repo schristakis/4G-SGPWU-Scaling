@@ -30,4 +30,5 @@ Create -> New Dashboard -> add an empty panel -> prometheus -> paste the setence
 rate(container_network_receive_packets_total{container="POD", interface="net2", job="kubelet", pod=~"oai-spgwu.*",namespace="oai"}[1m])
 
 
+route add -host 10.84.3.38 gw 10.64.92.1 (where 10.84.3.38 the ip of host eth1)
 http://10.64.93.11:30179/
